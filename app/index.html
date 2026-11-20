@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Midnight Vice — GTA-Style Cover Studio</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">MV</span>
+    <div>
+      <h1>Midnight Vice</h1>
+      <p>Cover Studio — your photos, GTA-style key art</p>
+    </div>
+  </div>
+  <ol class="steps">
+    <li><span>1</span> Add photos</li>
+    <li><span>2</span> Caption it</li>
+    <li><span>3</span> Export PNG</li>
+  </ol>
+  <div class="top-actions">
+    <button id="undoBtn" type="button" disabled>Undo</button>
+    <button id="redoBtn" type="button" disabled>Redo</button>
+    <button id="shuffleBtn" type="button" class="accent">Shuffle look</button>
+  </div>
+</header>
+
+<main class="studio">
+  <aside class="panel left">
+    <section>
+      <h2>Photos <span id="photoCount" class="count">0 photos</span></h2>
+      <div class="photo-actions">
+        <label class="btn-file">Add photos
+          <input id="addPhotos" type="file" accept="image/*" multiple>
+        </label>
+        <button id="loadSamples" type="button">Load samples</button>
+        <button id="autoFillBtn" type="button">Auto-fill panels</button>
+      </div>
+      <p class="hint">Drop images anywhere, or paste one. Photos never leave this machine.</p>
+      <div id="photoList" class="photo-list"></div>
+    </section>
+    <section>
+      <h2>Layout</h2>
+      <div id="layoutList" class="option-list"></div>
+    </section>
+    <section>
+      <h2>Colour grade</h2>
+      <div id="gradeList" class="grade-list"></div>
+      <label class="slider-row">Poster ink <span id="inkLabel">50%</span>
+        <input id="inkRange" type="range" min="0" max="1" step="0.05" value="0.5">
+      </label>
+    </section>
+  </aside>
+
+  <section class="stage">
+    <div class="size-tabs" id="sizeTabs" role="tablist" aria-label="Post size">
+      <button type="button" data-size="1x1" role="tab">1:1 Square</button>
+      <button type="button" data-size="4x5" role="tab">4:5 Portrait</button>
+      <button type="button" data-size="16x9" role="tab" class="active">16:9 Wide</button>
+    </div>
+    <div class="canvas-wrap">
+      <canvas id="previewCanvas" width="1920" height="1080" aria-label="Live cover preview"></canvas>
+      <div id="badgeLayer" class="badge-layer"></div>
+    </div>
+    <p class="stage-meta"><span id="sizeLabel">16:9 · 1920 x 1080</span> · <span id="panelLabel">Panel 1 of 7</span> · Click a panel, drag to move its photo, scroll to zoom, drag a number badge onto another to swap.</p>
+    <div class="panel-bar">
+      <button id="prevPhotoBtn" type="button">◀ Photo</button>
+      <button id="nextPhotoBtn" type="button">Photo ▶</button>
+      <button id="flipBtn" type="button">Flip</button>
+      <button id="resetCropBtn" type="button">Reset crop</button>
+      <label class="slider-row">Zoom <span id="zoomLabel">1.00x</span>
+        <input id="zoomRange" type="range" min="1" max="3" step="0.01" value="1">
+      </label>
+    </div>
+  </section>
+
+  <aside class="panel right">
+    <section>
+      <h2>Caption</h2>
+      <label>Title
+        <input id="titleInput" type="text" maxlength="30" value="MIDNIGHT RUN">
+      </label>
+      <label>Script subtitle
+        <input id="scriptInput" type="text" maxlength="48" value="chasing the last light">
+      </label>
+      <label>Tagline ribbon
+        <input id="taglineInput" type="text" maxlength="60" value="SEVEN LIVES · ONE NIGHT · NO WAY HOME">
+      </label>
+      <label>Review quote
+        <input id="quoteInput" type="text" maxlength="48" value="A NEON-NOIR JOYRIDE">
+      </label>
+      <label>Quote source
+        <input id="quoteSourceInput" type="text" maxlength="30" value="THE NIGHT DESK">
+      </label>
+      <label>Billing block
+        <textarea id="billingInput" rows="2" maxlength="140">A MIDNIGHT VICE PICTURE
+MIDNIGHT RUN · STARRING THE NIGHT CREW · NO WAY HOME</textarea>
+      </label>
+      <div class="field-grid">
+        <label>Seal text
+          <input id="sealTextInput" type="text" maxlength="24" value="ORIGINAL COVER ART">
+        </label>
+        <label>Release line
+          <input id="releaseInput" type="text" maxlength="24" value="COMING SOON">
+        </label>
+        <label>Edition tag
+          <input id="editionInput" type="text" maxlength="12" value="VOL. 01">
+        </label>
+        <label>Location stamp
+          <input id="locationInput" type="text" maxlength="30" value="NEON ROW · 11:47 PM">
+        </label>
+      </div>
+      <label class="slider-row">Wanted heat <span id="heatLabel">5 / 5</span>
+        <input id="heatRange" type="range" min="0" max="5" step="1" value="5">
+      </label>
+    </section>
+    <section>
+      <h2>Poster extras</h2>
+      <div class="toggles">
+        <label><input id="tglStars" type="checkbox" checked> Stars &amp; quote</label>
+        <label><input id="tglHeat" type="checkbox" checked> Wanted heat pill</label>
+        <label><input id="tglLocation" type="checkbox" checked> Location stamp</label>
+        <label><input id="tglSeal" type="checkbox" checked> Gold seal</label>
+        <label><input id="tglTags" type="checkbox" checked> Cast role tags</label>
+        <label><input id="tglBilling" type="checkbox" checked> Billing block</label>
+        <label><input id="tglGrain" type="checkbox" checked> Film grain</label>
+        <label><input id="tglVignette" type="checkbox" checked> Vignette</label>
+      </div>
+    </section>
+    <section>
+      <h2>Cast role tags</h2>
+      <div id="roleList" class="role-list"></div>
+    </section>
+    <section class="export">
+      <h2>Export PNG</h2>
+      <button id="exportBtn" type="button" class="primary">Export this size</button>
+      <button id="exportAllBtn" type="button">Export all 3 PNGs</button>
+      <p id="status" role="status">Loading sample crew…</p>
+    </section>
+  </aside>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
