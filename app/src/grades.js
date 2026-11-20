@@ -1,149 +1,144 @@
-// grades.js — the eight colour grades of Midnight Vice Cover Studio.
+// Midnight Vice Cover Studio — colour grades.
 //
-// A grade is a complete look: the canvas filter applied to every panel
-// photo, the tint washes laid over the panels, and the palette the
-// lettering, frames and furniture draw from. Grades are the app's own
-// invention — no palette is taken from any game's artwork.
+// A grade is two things at once: a CSS filter applied to each photo as it
+// is drawn (contrast / saturation / brightness / hue / sepia / grayscale),
+// and one or two translucent gradient overlays painted over the whole
+// cover with a blend mode. The strength slider (0..100) scales both: at
+// strength 0 the photo is ungraded, at 100 the grade is at full power.
+// The contrast and saturation sliders then bend the filter further.
 
 export const GRADES = [
   {
-    id: 'neon-night',
-    name: 'Neon Night',
-    filter: 'saturate(1.45) contrast(1.14) brightness(0.96) hue-rotate(-12deg)',
-    tint: [
-      'rgba(12, 4, 40, 0.30)',
-      'rgba(236, 72, 153, 0.12)',
-      'rgba(34, 211, 238, 0.10)',
+    id: "vice-sunset",
+    name: "Vice Sunset",
+    blurb: "Warm pink-orange dusk.",
+    filter: { contrast: 1.08, saturate: 1.25, brightness: 1.03 },
+    overlays: [
+      { kind: "linear", angle: 180, stops: [[0, "#ff5e8a"], [1, "#ffb35c"]], blend: "soft-light", alpha: 0.4 },
     ],
-    frame: '#0d0620',
-    titleStops: ['#a5f3fc', '#f0abfc', '#fbbf24', '#ec4899'],
-    titleOutline: '#0a0318',
-    script: '#f9a8d4',
-    accent: '#22d3ee',
-    strip: ['#1e1045', '#be185d', '#f59e0b'],
-    tag: '#0a0518',
   },
   {
-    id: 'sunset-gold',
-    name: 'Sunset Gold',
-    filter: 'sepia(0.34) saturate(1.5) contrast(1.08) brightness(1.03)',
-    tint: [
-      'rgba(255, 140, 0, 0.18)',
-      'rgba(219, 39, 119, 0.10)',
-      'rgba(40, 0, 30, 0.14)',
+    id: "neon-night",
+    name: "Neon Night",
+    blurb: "Dark streets, neon soak.",
+    filter: { contrast: 1.15, saturate: 1.4, brightness: 0.92, hue: -10 },
+    overlays: [
+      { kind: "radial", stops: [[0, "#ff2e88"], [1, "#00e5ff"]], blend: "screen", alpha: 0.22 },
+      { kind: "linear", angle: 180, stops: [[0, "#12082e"], [1, "#2b0a4a"]], blend: "multiply", alpha: 0.3 },
     ],
-    frame: '#2b0e18',
-    titleStops: ['#fef9c3', '#fde047', '#f97316', '#db2777'],
-    titleOutline: '#1c060e',
-    script: '#fb7185',
-    accent: '#facc15',
-    strip: ['#431407', '#ea580c', '#facc15'],
-    tag: '#17030a',
   },
   {
-    id: 'tropic-teal',
-    name: 'Tropic Teal',
-    filter: 'saturate(1.4) hue-rotate(18deg) contrast(1.06) brightness(1.04)',
-    tint: [
-      'rgba(0, 105, 95, 0.22)',
-      'rgba(45, 212, 191, 0.10)',
-      'rgba(8, 20, 55, 0.12)',
+    id: "golden-hour",
+    name: "Golden Hour",
+    blurb: "Warm low sun, honey light.",
+    filter: { contrast: 1.05, saturate: 1.2, brightness: 1.06, sepia: 0.16 },
+    overlays: [
+      { kind: "linear", angle: 160, stops: [[0, "#ffd76a"], [1, "#ff9a3c"]], blend: "overlay", alpha: 0.32 },
     ],
-    frame: '#04211d',
-    titleStops: ['#ccfbf1', '#5eead4', '#0d9488', '#e879f9'],
-    titleOutline: '#02110e',
-    script: '#f0abfc',
-    accent: '#2dd4bf',
-    strip: ['#042f2e', '#0d9488', '#facc15'],
-    tag: '#02100d',
   },
   {
-    id: 'ultraviolet',
-    name: 'Ultraviolet',
-    filter: 'saturate(1.6) hue-rotate(48deg) contrast(1.12) brightness(0.97)',
-    tint: [
-      'rgba(76, 29, 149, 0.28)',
-      'rgba(217, 70, 239, 0.12)',
-      'rgba(2, 6, 44, 0.16)',
+    id: "pink-teal",
+    name: "Pink / Teal",
+    blurb: "Duotone split, pink highs teal lows.",
+    filter: { contrast: 1.2, saturate: 0.9, grayscale: 0.55 },
+    overlays: [
+      { kind: "linear", angle: 180, stops: [[0, "#ff5fa2"], [1, "#17c3b2"]], blend: "color", alpha: 0.55 },
     ],
-    frame: '#1a0430',
-    titleStops: ['#f5f3ff', '#d8b4fe', '#9333ea', '#e879f9'],
-    titleOutline: '#0f0120',
-    script: '#e879f9',
-    accent: '#a855f7',
-    strip: ['#2e1065', '#7e22ce', '#d946ef'],
-    tag: '#0f011d',
   },
   {
-    id: 'heatwave',
-    name: 'Heatwave',
-    filter: 'saturate(1.7) contrast(1.16) brightness(1.02) hue-rotate(-24deg)',
-    tint: [
-      'rgba(220, 38, 38, 0.16)',
-      'rgba(249, 115, 22, 0.12)',
-      'rgba(30, 0, 0, 0.14)',
+    id: "comic-ink",
+    name: "Comic Ink",
+    blurb: "High-contrast inked print.",
+    filter: { contrast: 1.5, saturate: 1.3, brightness: 1.0 },
+    overlays: [
+      { kind: "linear", angle: 180, stops: [[0, "#ffffff"], [1, "#000000"]], blend: "overlay", alpha: 0.22 },
     ],
-    frame: '#2a0605',
-    titleStops: ['#fef3c7', '#fcd34d', '#f97316', '#dc2626'],
-    titleOutline: '#1a0303',
-    script: '#fca5a5',
-    accent: '#fb923c',
-    strip: ['#450a0a', '#dc2626', '#f97316'],
-    tag: '#160202',
   },
   {
-    id: 'retro-print',
-    name: 'Retro Print',
-    filter: 'sepia(0.55) saturate(0.85) contrast(0.96) brightness(1.05)',
-    tint: [
-      'rgba(120, 85, 20, 0.20)',
-      'rgba(180, 120, 40, 0.10)',
-      'rgba(30, 20, 5, 0.16)',
+    id: "heat-haze",
+    name: "Heat Haze",
+    blurb: "Washed out, hot afternoon.",
+    filter: { contrast: 0.9, saturate: 0.85, brightness: 1.1 },
+    overlays: [
+      { kind: "linear", angle: 180, stops: [[0, "#fff3d6"], [1, "#ffd9a0"]], blend: "screen", alpha: 0.28 },
     ],
-    frame: '#241a08',
-    titleStops: ['#fef3c7', '#fde68a', '#d97706', '#92400e'],
-    titleOutline: '#160f02',
-    script: '#d97706',
-    accent: '#b45309',
-    strip: ['#292524', '#a16207', '#f59e0b'],
-    tag: '#141005',
   },
   {
-    id: 'mono-noir',
-    name: 'Mono Noir',
-    filter: 'grayscale(1) contrast(1.22) brightness(0.98)',
-    tint: [
-      'rgba(0, 0, 0, 0.28)',
-      'rgba(255, 255, 255, 0.06)',
-      'rgba(0, 0, 0, 0.12)',
+    id: "midnight-blue",
+    name: "Midnight Blue",
+    blurb: "Cold blue night patrol.",
+    filter: { contrast: 1.1, saturate: 1.1, brightness: 0.9, hue: 15 },
+    overlays: [
+      { kind: "linear", angle: 180, stops: [[0, "#0a1e4a"], [1, "#123a6b"]], blend: "multiply", alpha: 0.28 },
+      { kind: "linear", angle: 0, stops: [[0, "#35d5ff"], [1, "#35d5ff"]], blend: "screen", alpha: 0.12 },
     ],
-    frame: '#0a0a0a',
-    titleStops: ['#ffffff', '#d4d4d4', '#a3a3a3', '#525252'],
-    titleOutline: '#000000',
-    script: '#e5e5e5',
-    accent: '#fafafa',
-    strip: ['#171717', '#404040', '#a3a3a3'],
-    tag: '#050505',
   },
   {
-    id: 'coral-dawn',
-    name: 'Coral Dawn',
-    filter: 'saturate(1.35) contrast(1.05) brightness(1.06) hue-rotate(-30deg)',
-    tint: [
-      'rgba(255, 127, 127, 0.16)',
-      'rgba(255, 183, 153, 0.10)',
-      'rgba(60, 10, 40, 0.10)',
-    ],
-    frame: '#2e0d1a',
-    titleStops: ['#fff1f2', '#fda4af', '#fb7185', '#f472b6'],
-    titleOutline: '#1d0610',
-    script: '#fda4af',
-    accent: '#fda4af',
-    strip: ['#4c0519', '#e11d48', '#fb923c'],
-    tag: '#170510',
+    id: "natural",
+    name: "Natural",
+    blurb: "Clean, ungraded.",
+    filter: {},
+    overlays: [],
   },
 ];
 
 export function gradeById(id) {
-  return GRADES.find((g) => g.id === id) ?? GRADES[0];
+  return GRADES.find((g) => g.id === id) || GRADES[0];
+}
+
+// Blend one filter knob toward its neutral value by strength t (0..1).
+function mixKnob(value, neutral, t) {
+  return neutral + (value - neutral) * t;
+}
+
+// The CSS filter string for a photo: the grade's filter at the given
+// strength, bent by the user's contrast / saturation sliders (percent).
+export function photoFilter(gradeId, strength, contrastPct, saturationPct) {
+  const g = gradeById(gradeId);
+  const t = strength / 100;
+  const f = g.filter;
+  const parts = [];
+  const contrast = mixKnob(f.contrast ?? 1, 1, t) * (contrastPct / 100);
+  const saturate = mixKnob(f.saturate ?? 1, 1, t) * (saturationPct / 100);
+  const brightness = mixKnob(f.brightness ?? 1, 1, t);
+  const hue = mixKnob(f.hue ?? 0, 0, t);
+  const sepia = mixKnob(f.sepia ?? 0, 0, t);
+  const grayscale = mixKnob(f.grayscale ?? 0, 0, t);
+  if (Math.abs(contrast - 1) > 0.005) parts.push(`contrast(${contrast.toFixed(3)})`);
+  if (Math.abs(saturate - 1) > 0.005) parts.push(`saturate(${saturate.toFixed(3)})`);
+  if (Math.abs(brightness - 1) > 0.005) parts.push(`brightness(${brightness.toFixed(3)})`);
+  if (Math.abs(hue) > 0.5) parts.push(`hue-rotate(${hue.toFixed(1)}deg)`);
+  if (sepia > 0.005) parts.push(`sepia(${sepia.toFixed(3)})`);
+  if (grayscale > 0.005) parts.push(`grayscale(${grayscale.toFixed(3)})`);
+  return parts.length ? parts.join(" ") : "none";
+}
+
+// Paint the grade's overlays over the whole cover. Each overlay is a
+// gradient filled with its blend mode at alpha scaled by strength.
+export function paintGradeOverlays(ctx, w, h, gradeId, strength) {
+  const g = gradeById(gradeId);
+  const t = strength / 100;
+  for (const o of g.overlays) {
+    const alpha = o.alpha * t;
+    if (alpha <= 0.004) continue;
+    let grad;
+    if (o.kind === "radial") {
+      grad = ctx.createRadialGradient(w / 2, h / 2, 0, w / 2, h / 2, Math.max(w, h) * 0.75);
+    } else {
+      const rad = ((o.angle ?? 180) * Math.PI) / 180;
+      const dx = Math.sin(rad);
+      const dy = -Math.cos(rad);
+      grad = ctx.createLinearGradient(
+        w / 2 - dx * w / 2, h / 2 - dy * h / 2,
+        w / 2 + dx * w / 2, h / 2 + dy * h / 2,
+      );
+    }
+    for (const [pos, color] of o.stops) grad.addColorStop(pos, color);
+    ctx.save();
+    ctx.globalCompositeOperation = o.blend;
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+  }
 }

@@ -1,115 +1,144 @@
-// layouts.js — the six panel layouts of Midnight Vice Cover Studio.
+// Midnight Vice Cover Studio — panel layouts.
 //
-// Every layout is a set of panels in unit coordinates (0..1 across the
-// cover), each with the cast role it is meant to hold. The renderer turns
-// these rects into clipped photo panels; `slant` shears a panel into a
-// parallelogram for the Diagonal Slant layout, and `popout` marks the hero
-// panel that overflows its frame in the Pop-Out Hero layout.
+// Every layout is drawn on a 12 x 12 grid so one definition adapts to
+// landscape, portrait and square output. A panel is { x, y, w, h } in grid
+// units, plus an optional slant (horizontal shear of the top edge, in grid
+// units) and an optional bleed (how far the panel spills past the canvas
+// edge on the left / top, for the pop-out hero look).
+//
+// Wide rects are used for landscape output; tall rects for portrait and
+// square output, where a side column would squeeze the panels too thin.
+
+export const GRID = 12;
 
 export const LAYOUTS = [
   {
-    id: 'mosaic',
-    name: 'Vice Mosaic',
-    blurb: 'Tall hero on the left, six panels stacked on the right.',
-    titleZone: { y: 0.8, align: 'left', width: 0.96 },
-    panels: [
-      { x: 0.015, y: 0.02, w: 0.4, h: 0.76, role: 'HERO', hero: true },
-      { x: 0.425, y: 0.02, w: 0.28, h: 0.245, role: 'DRIVER' },
-      { x: 0.715, y: 0.02, w: 0.27, h: 0.245, role: 'LOOKOUT' },
-      { x: 0.425, y: 0.275, w: 0.28, h: 0.245, role: 'RIDER' },
-      { x: 0.715, y: 0.275, w: 0.27, h: 0.245, role: 'BOSS' },
-      { x: 0.425, y: 0.53, w: 0.28, h: 0.25, role: 'RIDE' },
-      { x: 0.715, y: 0.53, w: 0.27, h: 0.25, role: 'CITY' },
+    id: "midnight-hero",
+    name: "Midnight Hero",
+    blurb: "One dominant panel, three supporting shots.",
+    wide: [
+      { x: 0, y: 0, w: 7, h: 12, bleed: { l: 0.45, t: 0.45 } },
+      { x: 7.25, y: 0, w: 4.75, h: 3.9 },
+      { x: 7.25, y: 4.05, w: 4.75, h: 3.9 },
+      { x: 7.25, y: 8.1, w: 4.75, h: 3.9 },
+    ],
+    tall: [
+      { x: 0, y: 0, w: 12, h: 6.9, bleed: { l: 0.45, t: 0.45 } },
+      { x: 0, y: 7.15, w: 3.9, h: 4.85 },
+      { x: 4.05, y: 7.15, w: 3.9, h: 4.85 },
+      { x: 8.1, y: 7.15, w: 3.9, h: 4.85 },
     ],
   },
   {
-    id: 'hero-center',
-    name: 'Hero Center',
-    blurb: 'One big hero in the middle, three panels on each side.',
-    titleZone: { y: 0.8, align: 'center', width: 0.96 },
-    panels: [
-      { x: 0.3, y: 0.02, w: 0.4, h: 0.76, role: 'HERO', hero: true },
-      { x: 0.015, y: 0.02, w: 0.275, h: 0.245, role: 'DRIVER' },
-      { x: 0.015, y: 0.275, w: 0.275, h: 0.245, role: 'LOOKOUT' },
-      { x: 0.015, y: 0.53, w: 0.275, h: 0.25, role: 'RIDE' },
-      { x: 0.71, y: 0.02, w: 0.275, h: 0.245, role: 'RIDER' },
-      { x: 0.71, y: 0.275, w: 0.275, h: 0.245, role: 'BOSS' },
-      { x: 0.71, y: 0.53, w: 0.275, h: 0.25, role: 'CITY' },
+    id: "neon-slash",
+    name: "Neon Slash",
+    blurb: "Diagonal comic-book cuts, three tall strips.",
+    wide: [
+      { x: 0, y: 0, w: 4.4, h: 12, slant: 0.9 },
+      { x: 3.95, y: 0, w: 4.4, h: 12, slant: 0.9 },
+      { x: 7.9, y: 0, w: 4.1, h: 12, slant: 0.9 },
+    ],
+    tall: [
+      { x: 0, y: 0, w: 4.4, h: 12, slant: 0.9 },
+      { x: 3.95, y: 0, w: 4.4, h: 12, slant: 0.9 },
+      { x: 7.9, y: 0, w: 4.1, h: 12, slant: 0.9 },
     ],
   },
   {
-    id: 'diagonal',
-    name: 'Diagonal Slant',
-    blurb: 'Five slanted bands slicing the cover corner to corner.',
-    titleZone: { y: 0.82, align: 'left', width: 0.96 },
-    panels: [
-      { x: 0.015, y: 0.02, w: 0.3, h: 0.78, role: 'HERO', hero: true, slant: 0.06 },
-      { x: 0.27, y: 0.02, w: 0.2, h: 0.78, role: 'DRIVER', slant: 0.06 },
-      { x: 0.44, y: 0.02, w: 0.2, h: 0.78, role: 'RIDER', slant: 0.06 },
-      { x: 0.61, y: 0.02, w: 0.2, h: 0.78, role: 'BOSS', slant: 0.06 },
-      { x: 0.78, y: 0.02, w: 0.205, h: 0.78, role: 'CITY', slant: 0.06 },
+    id: "nine-grid",
+    name: "Nine Grid",
+    blurb: "Three by three equal frames.",
+    wide: [
+      { x: 0, y: 0, w: 3.9, h: 3.9 }, { x: 4.05, y: 0, w: 3.9, h: 3.9 }, { x: 8.1, y: 0, w: 3.9, h: 3.9 },
+      { x: 0, y: 4.05, w: 3.9, h: 3.9 }, { x: 4.05, y: 4.05, w: 3.9, h: 3.9 }, { x: 8.1, y: 4.05, w: 3.9, h: 3.9 },
+      { x: 0, y: 8.1, w: 3.9, h: 3.9 }, { x: 4.05, y: 8.1, w: 3.9, h: 3.9 }, { x: 8.1, y: 8.1, w: 3.9, h: 3.9 },
+    ],
+    tall: [
+      { x: 0, y: 0, w: 3.9, h: 3.9 }, { x: 4.05, y: 0, w: 3.9, h: 3.9 }, { x: 8.1, y: 0, w: 3.9, h: 3.9 },
+      { x: 0, y: 4.05, w: 3.9, h: 3.9 }, { x: 4.05, y: 4.05, w: 3.9, h: 3.9 }, { x: 8.1, y: 4.05, w: 3.9, h: 3.9 },
+      { x: 0, y: 8.1, w: 3.9, h: 3.9 }, { x: 4.05, y: 8.1, w: 3.9, h: 3.9 }, { x: 8.1, y: 8.1, w: 3.9, h: 3.9 },
     ],
   },
   {
-    id: 'popout',
-    name: 'Pop-Out Hero',
-    blurb: 'The hero breaks out of the frame, over the title below.',
-    titleZone: { y: 0.8, align: 'left', width: 0.96 },
-    panels: [
-      { x: 0.03, y: 0.03, w: 0.38, h: 0.72, role: 'HERO', hero: true, popout: true },
-      { x: 0.425, y: 0.02, w: 0.28, h: 0.245, role: 'DRIVER' },
-      { x: 0.715, y: 0.02, w: 0.27, h: 0.245, role: 'LOOKOUT' },
-      { x: 0.425, y: 0.275, w: 0.28, h: 0.245, role: 'RIDER' },
-      { x: 0.715, y: 0.275, w: 0.27, h: 0.245, role: 'BOSS' },
-      { x: 0.425, y: 0.53, w: 0.28, h: 0.25, role: 'RIDE' },
-      { x: 0.715, y: 0.53, w: 0.27, h: 0.25, role: 'CITY' },
+    id: "solo-frame",
+    name: "Solo Frame",
+    blurb: "One photo edge to edge, poster style.",
+    wide: [{ x: 0, y: 0, w: 12, h: 12 }],
+    tall: [{ x: 0, y: 0, w: 12, h: 12 }],
+  },
+  {
+    id: "double-take",
+    name: "Double Take",
+    blurb: "Two panels, lead and echo.",
+    wide: [
+      { x: 0, y: 0, w: 7, h: 12, bleed: { l: 0.3, t: 0.3 } },
+      { x: 7.25, y: 0, w: 4.75, h: 12 },
+    ],
+    tall: [
+      { x: 0, y: 0, w: 12, h: 6.9, bleed: { l: 0.3, t: 0.3 } },
+      { x: 0, y: 7.15, w: 12, h: 4.85 },
     ],
   },
   {
-    id: 'filmstrip',
-    name: 'Film Strip',
-    blurb: 'A sprocket-holed strip of five frames under the title.',
-    titleZone: { y: 0.03, align: 'center', width: 0.96 },
-    panels: [
-      { x: 0.015, y: 0.24, w: 0.188, h: 0.5, role: 'HERO', hero: true },
-      { x: 0.211, y: 0.24, w: 0.188, h: 0.5, role: 'DRIVER' },
-      { x: 0.407, y: 0.24, w: 0.188, h: 0.5, role: 'RIDER' },
-      { x: 0.603, y: 0.24, w: 0.188, h: 0.5, role: 'BOSS' },
-      { x: 0.799, y: 0.24, w: 0.186, h: 0.5, role: 'CITY' },
-      { x: 0.015, y: 0.76, w: 0.97, h: 0.14, role: 'RIDE', wide: true },
+    id: "four-corners",
+    name: "Four Corners",
+    blurb: "Two by two, an ensemble sheet.",
+    wide: [
+      { x: 0, y: 0, w: 5.9, h: 5.9 }, { x: 6.1, y: 0, w: 5.9, h: 5.9 },
+      { x: 0, y: 6.1, w: 5.9, h: 5.9 }, { x: 6.1, y: 6.1, w: 5.9, h: 5.9 },
     ],
-  },
-  {
-    id: 'poster-grid',
-    name: 'Poster Grid',
-    blurb: 'Six equal posters in a three-by-two grid.',
-    titleZone: { y: 0.8, align: 'center', width: 0.96 },
-    panels: [
-      { x: 0.015, y: 0.02, w: 0.32, h: 0.37, role: 'HERO', hero: true },
-      { x: 0.345, y: 0.02, w: 0.32, h: 0.37, role: 'DRIVER' },
-      { x: 0.675, y: 0.02, w: 0.31, h: 0.37, role: 'LOOKOUT' },
-      { x: 0.015, y: 0.4, w: 0.32, h: 0.38, role: 'RIDER' },
-      { x: 0.345, y: 0.4, w: 0.32, h: 0.38, role: 'BOSS' },
-      { x: 0.675, y: 0.4, w: 0.31, h: 0.38, role: 'CITY' },
+    tall: [
+      { x: 0, y: 0, w: 5.9, h: 5.9 }, { x: 6.1, y: 0, w: 5.9, h: 5.9 },
+      { x: 0, y: 6.1, w: 5.9, h: 5.9 }, { x: 6.1, y: 6.1, w: 5.9, h: 5.9 },
     ],
   },
 ];
 
 export function layoutById(id) {
-  return LAYOUTS.find((l) => l.id === id) ?? LAYOUTS[0];
+  return LAYOUTS.find((l) => l.id === id) || LAYOUTS[0];
 }
 
-// Panel rects in pixels for a cover of W x H.
-export function panelRects(layout, W, H) {
-  return layout.panels.map((p) => ({
-    x: p.x * W,
-    y: p.y * H,
-    w: p.w * W,
-    h: p.h * H,
-    role: p.role,
-    hero: !!p.hero,
-    popout: !!p.popout,
-    wide: !!p.wide,
-    slant: (p.slant ?? 0) * W,
-  }));
+// Pixel rects for a canvas of w x h. `tall` is true for portrait/square
+// output (aspect below 1.2). A rect is { x, y, w, h, slantPx, bleed } in
+// pixels; slantPx shears the top edge right by that many pixels.
+export function panelRects(layoutId, w, h) {
+  const layout = layoutById(layoutId);
+  const tall = w / h < 1.2;
+  const defs = tall ? layout.tall : layout.wide;
+  const gx = w / GRID;
+  const gy = h / GRID;
+  return defs.map((p) => {
+    const bleed = p.bleed || { l: 0, t: 0 };
+    return {
+      x: (p.x - bleed.l) * gx,
+      y: (p.y - bleed.t) * gy,
+      w: (p.w + bleed.l) * gx,
+      h: (p.h + bleed.t) * gy,
+      slantPx: (p.slant || 0) * gx,
+      bleed: bleed.l > 0 || bleed.t > 0,
+    };
+  });
+}
+
+// Clip path for one panel rect: a parallelogram when slanted, a plain
+// rectangle otherwise. The shear leans the top edge right.
+export function clipPanel(ctx, r) {
+  ctx.beginPath();
+  if (r.slantPx) {
+    const s = r.slantPx;
+    ctx.moveTo(r.x + s, r.y);
+    ctx.lineTo(r.x + r.w + s, r.y);
+    ctx.lineTo(r.x + r.w, r.y + r.h);
+    ctx.lineTo(r.x, r.y + r.h);
+  } else {
+    ctx.rect(r.x, r.y, r.w, r.h);
+  }
+  ctx.closePath();
+  ctx.clip();
+}
+
+// The title zone: the bottom band where the big lettering sits. Panels
+// whose label chip would land inside it skip the chip.
+export function titleZone(w, h) {
+  return { x: 0, y: h * 0.7, w: w * 0.62, h: h * 0.3 };
 }

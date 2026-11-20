@@ -1,40 +1,50 @@
-// serve.ts — a tiny static server for trying Midnight Vice Cover Studio
-// locally: `node serve.ts`, then open http://localhost:8080.
-// Serves app/ at the root; anything else gets a 404.
-import { createServer } from 'node:http';
-import { existsSync, readFileSync, statSync } from 'node:fs';
-import { extname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+// Midnight Vice Cover Studio — local static server.
+//
+// Serves app/ over HTTP on localhost for development and screenshot
+// capture. Run: `node serve.ts` (or PORT=8123 node serve.ts), then open
+// http://localhost:8080 in desktop Chrome. No build step, no dependencies.
 
-const appDir = join(fileURLToPath(new URL('.', import.meta.url)), 'app');
+import { createServer } from "node:http";
+import { existsSync, readFileSync, statSync } from "node:fs";
+import { dirname, extname, join, normalize, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const MIME = new Map([
-  ['.html', 'text/html; charset=utf-8'],
-  ['.js', 'text/javascript; charset=utf-8'],
-  ['.mjs', 'text/javascript; charset=utf-8'],
-  ['.css', 'text/css; charset=utf-8'],
-  ['.json', 'application/json; charset=utf-8'],
-  ['.jpg', 'image/jpeg'],
-  ['.jpeg', 'image/jpeg'],
-  ['.png', 'image/png'],
-  ['.ttf', 'font/ttf'],
-  ['.txt', 'text/plain; charset=utf-8'],
-]);
+const appDir = join(dirname(fileURLToPath(import.meta.url)), "app");
+const port = Number(process.env.PORT || 8080);
+
+const TYPES: Record<string, string> = {
+  ".html": "text/html; charset=utf-8",
+  ".css": "text/css; charset=utf-8",
+  ".js": "text/javascript; charset=utf-8",
+  ".mjs": "text/javascript; charset=utf-8",
+  ".json": "application/json; charset=utf-8",
+  ".jpg": "image/jpeg",
+  ".jpeg": "image/jpeg",
+  ".png": "image/png",
+  ".ttf": "font/ttf",
+  ".woff": "font/woff",
+  ".woff2": "font/woff2",
+  ".svg": "image/svg+xml",
+};
 
 const server = createServer((req, res) => {
-  const pathname = new URL(req.url ?? '/', 'http://localhost').pathname;
-  const rel = pathname === '/' ? 'index.html' : pathname.replace(/^\/+/, '');
-  const target = join(appDir, rel);
-  if (!target.startsWith(appDir) || !existsSync(target) || !statSync(target).isFile()) {
-    res.writeHead(404, { 'content-type': 'text/plain; charset=utf-8' });
-    res.end('not found\n');
+  const raw = decodeURIComponent(new URL(req.url || "/", "http://localhost").pathname);
+  const rel = normalize(raw).replace(/^(\.\.[/\\])+/, "").replace(/^[/\\]/, "") || "index.html";
+  const file = join(appDir, rel);
+  if (!file.startsWith(appDir + sep) && file !== appDir) {
+    res.writeHead(403);
+    res.end("forbidden");
     return;
   }
-  res.writeHead(200, { 'content-type': MIME.get(extname(target)) ?? 'application/octet-stream' });
-  res.end(readFileSync(target));
+  if (!existsSync(file) || !statSync(file).isFile()) {
+    res.writeHead(404);
+    res.end("not found");
+    return;
+  }
+  res.writeHead(200, { "content-type": TYPES[extname(file)] || "application/octet-stream" });
+  res.end(readFileSync(file));
 });
 
-const PORT = Number(process.env.PORT ?? 8080);
-server.listen(PORT, () => {
-  console.log(`Midnight Vice Cover Studio at http://localhost:${PORT}`);
+server.listen(port, () => {
+  console.log(`Midnight Vice Cover Studio at http://localhost:${port}`);
 });
